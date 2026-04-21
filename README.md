@@ -1,73 +1,49 @@
-# React + TypeScript + Vite
+# Caustic Lens Preview
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Interactive WebGL2 caustic renderer — preview how a resin lens block projects light patterns onto a surface below. Refactored from vanilla HTML/JS into React + Vite + TypeScript.
 
-Currently, two official plugins are available:
+**[→ Original repo](https://github.com/bkmashiro/caustic-preview)**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## What it does
 
-## React Compiler
+- Real-time caustic rendering via WebGL2 (per-pixel backward ray tracing)
+- Adjust refractive index, lens geometry, light direction, surface profile
+- Generate printable lens meshes from images using a WASM backend
+- Load custom OBJ surfaces
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Stack
 
-## Expanding the ESLint configuration
+- **React + Vite + TypeScript**
+- **WebGL2** — shader logic ported directly from original
+- **WASM** — caustic mesh generator (`wasm/caustic.wasm`)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Project structure
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+src/
+  App.tsx                  — top-level layout
+  renderer/
+    CausticRenderer.ts     — WebGL2 renderer class
+    types.ts               — RenderParams interface
+  components/
+    ControlPanel.tsx       — sidebar container
+    SliderRow.tsx          — labelled slider with value display
+    ColorRow.tsx           — color picker row
+    SectionBlock.tsx       — collapsible section
+    GeneratePanel.tsx      — WASM generate + download flow
+    ViewControls.tsx       — camera preset buttons
+    HemisphereCanvas.tsx   — light direction picker
+  hooks/
+    useCausticRenderer.ts  — canvas ref + renderer lifecycle
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Dev
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```bash
+npm install
+npm run dev
+```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run build
 ```
